@@ -1,0 +1,384 @@
+{
+  "generatedBy": "@sqds/multisig@2.1.4 transactionMessageToMultisigTransactionMessageBytes / accountsForTransactionExecute",
+  "programAddress": "GyhGAqjokLwF9UXdQ2dR5Zwiup242j4mX4J1tSMKyAmD",
+  "multisig": "AKnL4NNf3DGWZJS6cPknBuEGnVsV4A4m5tgebLHaRSZ9",
+  "vault": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+  "transaction": "9o5qN7PNpWacPML5juvPrqgiuNDJTMEVFoZpurw2AfLg",
+  "ephemeralSigner0": "6JdKs3UfoMHsbi5awdtzn1GWNSUwzQexVHWqzXhCoXt3",
+  "scenarios": {
+    "sol-transfer": {
+      "input": {
+        "instructions": [
+          {
+            "programAddress": "11111111111111111111111111111111",
+            "accounts": [
+              {
+                "address": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+                "role": 3
+              },
+              {
+                "address": "GmaDrppBC7P5ARKV8g3djiwP89vz1jLK23V2GBjuAEGB",
+                "role": 1
+              }
+            ],
+            "dataHex": "0200000040420f0000000000"
+          }
+        ],
+        "addressesByLookupTableAddress": {},
+        "ephemeralSigners": 0
+      },
+      "expected": {
+        "compactMessageHex": "010101039f4a0e62d55496263e8f4ca31f5fda2020271596b434fb3e089a84dc50e1e2d5ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c000000000000000000000000000000000000000000000000000000000000000001020200010c000200000040420f000000000000",
+        "executeRemainingAccounts": [
+          {
+            "address": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+            "role": 1
+          },
+          {
+            "address": "GmaDrppBC7P5ARKV8g3djiwP89vz1jLK23V2GBjuAEGB",
+            "role": 1
+          },
+          {
+            "address": "11111111111111111111111111111111",
+            "role": 0
+          }
+        ]
+      }
+    },
+    "multi-ix-mixed-roles": {
+      "input": {
+        "instructions": [
+          {
+            "programAddress": "11111111111111111111111111111111",
+            "accounts": [
+              {
+                "address": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+                "role": 3
+              },
+              {
+                "address": "GmaDrppBC7P5ARKV8g3djiwP89vz1jLK23V2GBjuAEGB",
+                "role": 1
+              }
+            ],
+            "dataHex": "020000000100000000000000"
+          },
+          {
+            "programAddress": "J2xccRtuG43drESLYznHhLhQkLTdfepcKYbiQ9BsJVaf",
+            "accounts": [
+              {
+                "address": "9hSR6S7WPtxmTojgo6GG3k4yDPecgJY292j7xrsUGWBu",
+                "role": 2
+              },
+              {
+                "address": "GyGKxMyg1p9SsHfm15MkNUu1u9TN2JtTspcdmrtGUdse",
+                "role": 1
+              },
+              {
+                "address": "EdmxWPmx2WH6WgFfTdu9xfkYf3k1g5wD1zccTVySEEh1",
+                "role": 0
+              },
+              {
+                "address": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+                "role": 2
+              }
+            ],
+            "dataHex": "010203"
+          },
+          {
+            "programAddress": "11111111111111111111111111111111",
+            "accounts": [
+              {
+                "address": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+                "role": 3
+              },
+              {
+                "address": "2KW2XRd9kwqet15Aha2oK3tYvd3nWbTFH1MBiRAv1BE1",
+                "role": 1
+              }
+            ],
+            "dataHex": "020000000200000000000000"
+          }
+        ],
+        "addressesByLookupTableAddress": {},
+        "ephemeralSigners": 0
+      },
+      "expected": {
+        "compactMessageHex": "020103089f4a0e62d55496263e8f4ca31f5fda2020271596b434fb3e089a84dc50e1e2d58139770ea87d175f56a35466c34c7ecccb8d8a91b4ee37a25df60f5b8fc9b394ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22ced4928c628d1c2c6eae90338905995612959273a5c63f93636c14614ac8737d11398f62c6d1a457c51ba6a4b5f3dbd2f69fca93216218dc8997e416bd17d93ca0000000000000000000000000000000000000000000000000000000000000000fd1724385aa0c75b64fb78cd602fa1d991fdebf76b13c58ed702eac835e9f618ca93ac1705187071d67b83c7ff0efe8108e8ec4530575d7726879333dbdabe7c03050200020c000200000001000000000000000604010307000300010203050200040c0002000000020000000000000000",
+        "executeRemainingAccounts": [
+          {
+            "address": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+            "role": 1
+          },
+          {
+            "address": "9hSR6S7WPtxmTojgo6GG3k4yDPecgJY292j7xrsUGWBu",
+            "role": 2
+          },
+          {
+            "address": "GmaDrppBC7P5ARKV8g3djiwP89vz1jLK23V2GBjuAEGB",
+            "role": 1
+          },
+          {
+            "address": "GyGKxMyg1p9SsHfm15MkNUu1u9TN2JtTspcdmrtGUdse",
+            "role": 1
+          },
+          {
+            "address": "2KW2XRd9kwqet15Aha2oK3tYvd3nWbTFH1MBiRAv1BE1",
+            "role": 1
+          },
+          {
+            "address": "11111111111111111111111111111111",
+            "role": 0
+          },
+          {
+            "address": "J2xccRtuG43drESLYznHhLhQkLTdfepcKYbiQ9BsJVaf",
+            "role": 0
+          },
+          {
+            "address": "EdmxWPmx2WH6WgFfTdu9xfkYf3k1g5wD1zccTVySEEh1",
+            "role": 0
+          }
+        ]
+      }
+    },
+    "alt-single": {
+      "input": {
+        "instructions": [
+          {
+            "programAddress": "J2xccRtuG43drESLYznHhLhQkLTdfepcKYbiQ9BsJVaf",
+            "accounts": [
+              {
+                "address": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+                "role": 3
+              },
+              {
+                "address": "GyGKxMyg1p9SsHfm15MkNUu1u9TN2JtTspcdmrtGUdse",
+                "role": 1
+              },
+              {
+                "address": "EdmxWPmx2WH6WgFfTdu9xfkYf3k1g5wD1zccTVySEEh1",
+                "role": 0
+              },
+              {
+                "address": "8SFqwqnq4whPhs8icwHA2hQg3hUoN1qrCLK1SBx3WKwe",
+                "role": 0
+              }
+            ],
+            "dataHex": "09"
+          },
+          {
+            "programAddress": "11111111111111111111111111111111",
+            "accounts": [
+              {
+                "address": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+                "role": 3
+              },
+              {
+                "address": "GyGKxMyg1p9SsHfm15MkNUu1u9TN2JtTspcdmrtGUdse",
+                "role": 1
+              }
+            ],
+            "dataHex": "020000000300000000000000"
+          }
+        ],
+        "addressesByLookupTableAddress": {
+          "5Z6Ay5NEcbg3xhopc522sBCRXQujkTiuDRnHGfQdcnSf": [
+            "8SFqwqnq4whPhs8icwHA2hQg3hUoN1qrCLK1SBx3WKwe",
+            "J2xccRtuG43drESLYznHhLhQkLTdfepcKYbiQ9BsJVaf",
+            "GyGKxMyg1p9SsHfm15MkNUu1u9TN2JtTspcdmrtGUdse",
+            "AKkzLhjhyFtM9j7WAhbaqYpFe49cXeJBg2kzLRC2PnNa"
+          ]
+        },
+        "ephemeralSigners": 0
+      },
+      "expected": {
+        "compactMessageHex": "010100039f4a0e62d55496263e8f4ca31f5fda2020271596b434fb3e089a84dc50e1e2d5ca93ac1705187071d67b83c7ff0efe8108e8ec4530575d7726879333dbdabe7c000000000000000000000000000000000000000000000000000000000000000002040400030105010009020200030c000200000003000000000000000143a72e714401762df66b68c26dfbdf2682aaec9f2474eca4613e424a0fbafd3c0102020100",
+        "executeRemainingAccounts": [
+          {
+            "address": "5Z6Ay5NEcbg3xhopc522sBCRXQujkTiuDRnHGfQdcnSf",
+            "role": 0
+          },
+          {
+            "address": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+            "role": 1
+          },
+          {
+            "address": "EdmxWPmx2WH6WgFfTdu9xfkYf3k1g5wD1zccTVySEEh1",
+            "role": 0
+          },
+          {
+            "address": "11111111111111111111111111111111",
+            "role": 0
+          },
+          {
+            "address": "GyGKxMyg1p9SsHfm15MkNUu1u9TN2JtTspcdmrtGUdse",
+            "role": 1
+          },
+          {
+            "address": "J2xccRtuG43drESLYznHhLhQkLTdfepcKYbiQ9BsJVaf",
+            "role": 0
+          },
+          {
+            "address": "8SFqwqnq4whPhs8icwHA2hQg3hUoN1qrCLK1SBx3WKwe",
+            "role": 0
+          }
+        ]
+      }
+    },
+    "alt-two-tables": {
+      "input": {
+        "instructions": [
+          {
+            "programAddress": "J2xccRtuG43drESLYznHhLhQkLTdfepcKYbiQ9BsJVaf",
+            "accounts": [
+              {
+                "address": "GyGKxMyg1p9SsHfm15MkNUu1u9TN2JtTspcdmrtGUdse",
+                "role": 1
+              },
+              {
+                "address": "EdmxWPmx2WH6WgFfTdu9xfkYf3k1g5wD1zccTVySEEh1",
+                "role": 0
+              },
+              {
+                "address": "9hSR6S7WPtxmTojgo6GG3k4yDPecgJY292j7xrsUGWBu",
+                "role": 2
+              }
+            ],
+            "dataHex": ""
+          },
+          {
+            "programAddress": "11111111111111111111111111111111",
+            "accounts": [
+              {
+                "address": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+                "role": 3
+              },
+              {
+                "address": "GyGKxMyg1p9SsHfm15MkNUu1u9TN2JtTspcdmrtGUdse",
+                "role": 1
+              }
+            ],
+            "dataHex": "020000000400000000000000"
+          }
+        ],
+        "addressesByLookupTableAddress": {
+          "5Z6Ay5NEcbg3xhopc522sBCRXQujkTiuDRnHGfQdcnSf": [
+            "AKkzLhjhyFtM9j7WAhbaqYpFe49cXeJBg2kzLRC2PnNa",
+            "GyGKxMyg1p9SsHfm15MkNUu1u9TN2JtTspcdmrtGUdse"
+          ],
+          "7v54NWdBtkjuAFJrLGsS2SXnuk8nKam81mZJeeYxVFi9": [
+            "EdmxWPmx2WH6WgFfTdu9xfkYf3k1g5wD1zccTVySEEh1",
+            "11111111111111111111111111111111"
+          ]
+        },
+        "ephemeralSigners": 0
+      },
+      "expected": {
+        "compactMessageHex": "020100039f4a0e62d55496263e8f4ca31f5fda2020271596b434fb3e089a84dc50e1e2d58139770ea87d175f56a35466c34c7ecccb8d8a91b4ee37a25df60f5b8fc9b394fd1724385aa0c75b64fb78cd602fa1d991fdebf76b13c58ed702eac835e9f6180202030304010000050200030c000200000004000000000000000243a72e714401762df66b68c26dfbdf2682aaec9f2474eca4613e424a0fbafd3c01010066be7e332c7a453332bd9d0a7f7db055f5c5ef1a06ada66d98b39fb6810c473a00020001",
+        "executeRemainingAccounts": [
+          {
+            "address": "5Z6Ay5NEcbg3xhopc522sBCRXQujkTiuDRnHGfQdcnSf",
+            "role": 0
+          },
+          {
+            "address": "7v54NWdBtkjuAFJrLGsS2SXnuk8nKam81mZJeeYxVFi9",
+            "role": 0
+          },
+          {
+            "address": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+            "role": 1
+          },
+          {
+            "address": "9hSR6S7WPtxmTojgo6GG3k4yDPecgJY292j7xrsUGWBu",
+            "role": 2
+          },
+          {
+            "address": "J2xccRtuG43drESLYznHhLhQkLTdfepcKYbiQ9BsJVaf",
+            "role": 0
+          },
+          {
+            "address": "GyGKxMyg1p9SsHfm15MkNUu1u9TN2JtTspcdmrtGUdse",
+            "role": 1
+          },
+          {
+            "address": "EdmxWPmx2WH6WgFfTdu9xfkYf3k1g5wD1zccTVySEEh1",
+            "role": 0
+          },
+          {
+            "address": "11111111111111111111111111111111",
+            "role": 0
+          }
+        ]
+      }
+    },
+    "ephemeral-create-account": {
+      "input": {
+        "instructions": [
+          {
+            "programAddress": "11111111111111111111111111111111",
+            "accounts": [
+              {
+                "address": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+                "role": 3
+              },
+              {
+                "address": "6JdKs3UfoMHsbi5awdtzn1GWNSUwzQexVHWqzXhCoXt3",
+                "role": 3
+              }
+            ],
+            "dataHex": "00000000604d160000000000520000000000000006ddf6e1d765a193d9cbe146ceeb79ac1cb485ed5f5b37913a8cf5857eff00a9"
+          }
+        ],
+        "addressesByLookupTableAddress": {},
+        "ephemeralSigners": 1
+      },
+      "expected": {
+        "compactMessageHex": "020200039f4a0e62d55496263e8f4ca31f5fda2020271596b434fb3e089a84dc50e1e2d54ece61a6525b804091b7e230f322f4211814955c1b83a80981217af712ae3da800000000000000000000000000000000000000000000000000000000000000000102020001340000000000604d160000000000520000000000000006ddf6e1d765a193d9cbe146ceeb79ac1cb485ed5f5b37913a8cf5857eff00a900",
+        "executeRemainingAccounts": [
+          {
+            "address": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+            "role": 1
+          },
+          {
+            "address": "6JdKs3UfoMHsbi5awdtzn1GWNSUwzQexVHWqzXhCoXt3",
+            "role": 1
+          },
+          {
+            "address": "11111111111111111111111111111111",
+            "role": 0
+          }
+        ]
+      }
+    },
+    "large-data": {
+      "input": {
+        "instructions": [
+          {
+            "programAddress": "J2xccRtuG43drESLYznHhLhQkLTdfepcKYbiQ9BsJVaf",
+            "accounts": [
+              {
+                "address": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+                "role": 3
+              }
+            ],
+            "dataHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b"
+          }
+        ],
+        "addressesByLookupTableAddress": {},
+        "ephemeralSigners": 0
+      },
+      "expected": {
+        "compactMessageHex": "010100029f4a0e62d55496263e8f4ca31f5fda2020271596b434fb3e089a84dc50e1e2d5fd1724385aa0c75b64fb78cd602fa1d991fdebf76b13c58ed702eac835e9f618010101002c01000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b00",
+        "executeRemainingAccounts": [
+          {
+            "address": "BioKYCUAMd9zSS729E38jWkg1hsYzchGwNTCvMx9FCjv",
+            "role": 1
+          },
+          {
+            "address": "J2xccRtuG43drESLYznHhLhQkLTdfepcKYbiQ9BsJVaf",
+            "role": 0
+          }
+        ]
+      }
+    }
+  }
+}
