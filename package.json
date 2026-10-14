@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"workspaces": [
-		"sdk/*"
+		"sdk/multisig"
 	],
 	"scripts": {
 		"build": "turbo run build",

@@ -1,0 +1,66 @@
+{
+  "name": "@sqds/multisig-kit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Kit-native SDK for Squads Multisig Program v4",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/index.d.ts",
+        "default": "./lib/index.js"
+      },
+      "require": {
+        "types": "./lib/index.d.cts",
+        "default": "./lib/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "generate": "node scripts/generate.ts",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "lint": "prettier --check . && tsc --noEmit",
+    "format": "prettier --write .",
+    "test": "vitest run --project unit",
+    "test:integration": "vitest run --project integration",
+    "build:program": "cargo-build-sbf --manifest-path ../../programs/squads_multisig_program/Cargo.toml --features testing --sbf-out-dir ../../target/deploy && cargo-build-sbf --manifest-path ../../programs/squads_multisig_program/Cargo.toml --sbf-out-dir ../../target/deploy-mainnet"
+  },
+  "peerDependencies": {
+    "@solana/kit": "^8.5.0"
+  },
+  "devDependencies": {
+    "@codama/nodes-from-anchor": "1.5.6",
+    "@codama/renderers-js": "2.6.0",
+    "@solana-program/address-lookup-table": "^0.15.0",
+    "@solana-program/system": "^0.15.0",
+    "@solana-program/token": "^0.17.0",
+    "@solana/kit": "^8.5.0",
+    "@solana/kit-plugin-rpc": "0.18.0",
+    "@solana/kit-plugin-signer": "0.18.0",
+    "@solana/surfpool": "1.6.1",
+    "@solana/web3.js": "3.0.2",
+    "@types/node": "^26.6.5",
+    "codama": "^1.11.0",
+    "prettier": "^3.9.10",
+    "tsup": "^9.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.4"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "packageManager": "pnpm@10.34.7"
+}
