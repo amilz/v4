@@ -125,7 +125,7 @@ export async function getProgramConfigSetMultisigCreationFeeInstructionAsync<
   TProgramAddress extends Address = typeof SQUADS_MULTISIG_PROGRAM_ADDRESS,
 >(
   input: ProgramConfigSetMultisigCreationFeeAsyncInput<TAccountProgramConfig, TAccountAuthority>,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress | { readonly address: TProgramAddress } },
 ): Promise<
   ProgramConfigSetMultisigCreationFeeInstruction<
     TProgramAddress,
@@ -140,7 +140,9 @@ export async function getProgramConfigSetMultisigCreationFeeInstructionAsync<
   >
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddressInput = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
 
   // Account meta helper.
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
@@ -200,7 +202,7 @@ export function getProgramConfigSetMultisigCreationFeeInstruction<
   TProgramAddress extends Address = typeof SQUADS_MULTISIG_PROGRAM_ADDRESS,
 >(
   input: ProgramConfigSetMultisigCreationFeeInput<TAccountProgramConfig, TAccountAuthority>,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress | { readonly address: TProgramAddress } },
 ): ProgramConfigSetMultisigCreationFeeInstruction<
   TProgramAddress,
   ResolvedInstructionAccountMeta<
@@ -213,7 +215,9 @@ export function getProgramConfigSetMultisigCreationFeeInstruction<
   >
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddressInput = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
 
   // Account meta helper.
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');

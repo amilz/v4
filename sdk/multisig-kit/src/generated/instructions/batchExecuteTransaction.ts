@@ -147,7 +147,7 @@ export async function getBatchExecuteTransactionInstructionAsync<
     TAccountBatch,
     TAccountTransaction
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress | { readonly address: TProgramAddress } },
 ): Promise<
   BatchExecuteTransactionInstruction<
     TProgramAddress,
@@ -168,7 +168,9 @@ export async function getBatchExecuteTransactionInstructionAsync<
   >
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddressInput = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
 
   // Account meta helper.
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
@@ -289,7 +291,7 @@ export function getBatchExecuteTransactionInstruction<
     TAccountBatch,
     TAccountTransaction
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress | { readonly address: TProgramAddress } },
 ): BatchExecuteTransactionInstruction<
   TProgramAddress,
   ResolvedInstructionAccountMeta<
@@ -308,7 +310,9 @@ export function getBatchExecuteTransactionInstruction<
   >
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddressInput = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
 
   // Account meta helper.
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');

@@ -253,7 +253,7 @@ export async function getMultisigAddSpendingLimitInstructionAsync<
     TAccountRentPayer,
     TAccountSystemProgram
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress | { readonly address: TProgramAddress } },
 ): Promise<
   MultisigAddSpendingLimitInstruction<
     TProgramAddress,
@@ -280,7 +280,9 @@ export async function getMultisigAddSpendingLimitInstructionAsync<
   >
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddressInput = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
 
   // Account meta helper.
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
@@ -392,7 +394,7 @@ export function getMultisigAddSpendingLimitInstruction<
     TAccountRentPayer,
     TAccountSystemProgram
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress | { readonly address: TProgramAddress } },
 ): MultisigAddSpendingLimitInstruction<
   TProgramAddress,
   ResolvedInstructionAccountMeta<
@@ -417,7 +419,9 @@ export function getMultisigAddSpendingLimitInstruction<
   >
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddressInput = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
 
   // Account meta helper.
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');

@@ -1,57 +1,22 @@
-import { existsSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { getTransferSolInstruction } from '@solana-program/system';
-import { createClient, createNoopSigner, generateKeyPairSigner, type Address } from '@solana/kit';
-import { surfpool } from '@solana/surfpool/kit';
+import { createNoopSigner, generateKeyPairSigner, type Address } from '@solana/kit';
 import { afterAll, describe, expect, it } from 'vitest';
 import {
   allPermissions,
-  getProgramConfigEncoder,
   Period,
   getSquadsMultisigErrorMessage,
   isSquadsMultisigError,
   squadsMultisigProgram,
   SQUADS_MULTISIG_ERROR__ALREADY_APPROVED,
-  SQUADS_MULTISIG_PROGRAM_ADDRESS,
 } from '../../src';
-
-/**
- * The `squadsMultisigProgram()` plugin and `isSquadsMultisigError` are hardwired to the
- * mainnet program id, so this file deploys the build made without the `testing` feature
- * (`pnpm build:program`) at that address instead of using the shared testing-id harness.
- */
-const SO_PATH = fileURLToPath(
-  new URL('../../../../target/deploy-mainnet/squads_multisig_program.so', import.meta.url),
-);
-if (!existsSync(SO_PATH)) {
-  throw new Error(`Missing ${SO_PATH}. Run \`pnpm build:program\` first.`);
-}
+import { createTestContext, programConfig } from './_setup';
 
 const LAMPORTS_PER_SOL = 1_000_000_000n;
 
-const client = await createClient().use(surfpool()).use(squadsMultisigProgram());
+const ctx = await createTestContext();
+const { treasury } = ctx;
+const client = ctx.client.use(squadsMultisigProgram(programConfig));
 afterAll(() => client.surfnet.stop());
-
-client.surfnet.deploy({ programId: SQUADS_MULTISIG_PROGRAM_ADDRESS, soPath: SO_PATH });
-
-// The mainnet build only lets the real initializer key run `programConfigInit`, so the
-// ProgramConfig account is written straight into the Surfnet using the generated encoder.
-const treasury = (await generateKeyPairSigner()).address;
-const [programConfigPda] = await client.squadsMultisig.pdas.programConfig();
-const programConfigData = getProgramConfigEncoder().encode({
-  authority: (await generateKeyPairSigner()).address,
-  multisigCreationFee: 0n,
-  treasury,
-  reserved: new Uint8Array(64),
-});
-client.surfnet.setAccount(
-  programConfigPda,
-  Number(
-    await client.rpc.getMinimumBalanceForRentExemption(BigInt(programConfigData.length)).send(),
-  ),
-  new Uint8Array(programConfigData),
-  SQUADS_MULTISIG_PROGRAM_ADDRESS,
-);
 
 async function createMultisig() {
   const [alice, bob, executor, createKey] = await Promise.all(
@@ -97,7 +62,7 @@ describe('squadsMultisigProgram() plugin', () => {
 
     const account = await client.squadsMultisig.accounts.multisig.fetch(multisig);
 
-    expect(account.programAddress).toBe(SQUADS_MULTISIG_PROGRAM_ADDRESS);
+    expect(account.programAddress).toBe(programConfig.programAddress);
     expect(account.data.threshold).toBe(2);
     expect(account.data.members.map((m) => m.key).sort()).toEqual(
       [alice, bob, executor].map((m) => m.address).sort(),
@@ -296,7 +261,7 @@ describe('squadsMultisigProgram() plugin', () => {
     let cause = error;
     while (
       cause &&
-      !isSquadsMultisigError(cause, message, SQUADS_MULTISIG_ERROR__ALREADY_APPROVED)
+      !isSquadsMultisigError(cause, message, SQUADS_MULTISIG_ERROR__ALREADY_APPROVED, programConfig)
     ) {
       cause = (cause as { cause?: unknown }).cause;
     }

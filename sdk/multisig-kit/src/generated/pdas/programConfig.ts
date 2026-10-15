@@ -10,15 +10,19 @@ import {
   getProgramDerivedAddress,
   getUtf8Encoder,
   type Address,
+  type HasAddress,
   type ProgramDerivedAddress,
 } from '@solana/kit';
 
 export async function findProgramConfigPda(
-  config: { programAddress?: Address | undefined } = {},
+  config: { programAddress?: Address | HasAddress | undefined } = {},
 ): Promise<ProgramDerivedAddress> {
   const {
-    programAddress = 'SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf' as Address<'SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf'>,
+    programAddress:
+      programAddressInput = 'SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf' as Address<'SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf'>,
   } = config;
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
   return await getProgramDerivedAddress({
     programAddress,
     seeds: [getUtf8Encoder().encode('multisig'), getUtf8Encoder().encode('program_config')],

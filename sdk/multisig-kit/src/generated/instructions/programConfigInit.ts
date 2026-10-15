@@ -153,7 +153,7 @@ export async function getProgramConfigInitInstructionAsync<
     TAccountInitializer,
     TAccountSystemProgram
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress | { readonly address: TProgramAddress } },
 ): Promise<
   ProgramConfigInitInstruction<
     TProgramAddress,
@@ -172,7 +172,9 @@ export async function getProgramConfigInitInstructionAsync<
   >
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddressInput = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
 
   // Account meta helper.
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
@@ -248,7 +250,7 @@ export function getProgramConfigInitInstruction<
   TProgramAddress extends Address = typeof SQUADS_MULTISIG_PROGRAM_ADDRESS,
 >(
   input: ProgramConfigInitInput<TAccountProgramConfig, TAccountInitializer, TAccountSystemProgram>,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress | { readonly address: TProgramAddress } },
 ): ProgramConfigInitInstruction<
   TProgramAddress,
   ResolvedInstructionAccountMeta<
@@ -265,7 +267,9 @@ export function getProgramConfigInitInstruction<
   >
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddressInput = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
 
   // Account meta helper.
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');

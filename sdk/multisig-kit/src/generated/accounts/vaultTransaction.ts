@@ -174,7 +174,7 @@ export function decodeVaultTransaction<TAddress extends string = string>(
 
 export async function fetchVaultTransaction<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
-  address: Address<TAddress>,
+  address: Address<TAddress> | HasAddress<TAddress>,
   config?: FetchAccountConfig,
 ): Promise<Account<VaultTransaction, TAddress>> {
   const maybeAccount = await fetchMaybeVaultTransaction(rpc, address, config);
@@ -184,16 +184,20 @@ export async function fetchVaultTransaction<TAddress extends string = string>(
 
 export async function fetchMaybeVaultTransaction<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
-  address: Address<TAddress>,
+  address: Address<TAddress> | HasAddress<TAddress>,
   config?: FetchAccountConfig,
 ): Promise<MaybeAccount<VaultTransaction, TAddress>> {
-  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
+  const maybeAccount = await fetchEncodedAccount(
+    rpc,
+    typeof address === 'string' ? address : address.address,
+    config,
+  );
   return decodeVaultTransaction(maybeAccount);
 }
 
 export async function fetchAllVaultTransaction(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
-  addresses: Array<Address>,
+  addresses: Array<Address | HasAddress>,
   config?: FetchAccountsConfig,
 ): Promise<Account<VaultTransaction>[]> {
   const maybeAccounts = await fetchAllMaybeVaultTransaction(rpc, addresses, config);
@@ -203,17 +207,21 @@ export async function fetchAllVaultTransaction(
 
 export async function fetchAllMaybeVaultTransaction(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
-  addresses: Array<Address>,
+  addresses: Array<Address | HasAddress>,
   config?: FetchAccountsConfig,
 ): Promise<MaybeAccount<VaultTransaction>[]> {
-  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
+  const maybeAccounts = await fetchEncodedAccounts(
+    rpc,
+    addresses.map((a) => (typeof a === 'string' ? a : a.address)),
+    config,
+  );
   return maybeAccounts.map((maybeAccount) => decodeVaultTransaction(maybeAccount));
 }
 
 export async function fetchVaultTransactionFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: TransactionSeeds,
-  config: FetchAccountConfig & { programAddress?: Address } = {},
+  config: FetchAccountConfig & { programAddress?: Address | HasAddress } = {},
 ): Promise<Account<VaultTransaction>> {
   const maybeAccount = await fetchMaybeVaultTransactionFromSeeds(rpc, seeds, config);
   assertAccountExists(maybeAccount);
@@ -223,7 +231,7 @@ export async function fetchVaultTransactionFromSeeds(
 export async function fetchMaybeVaultTransactionFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: TransactionSeeds,
-  config: FetchAccountConfig & { programAddress?: Address } = {},
+  config: FetchAccountConfig & { programAddress?: Address | HasAddress } = {},
 ): Promise<MaybeAccount<VaultTransaction>> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findTransactionPda(seeds, { programAddress });

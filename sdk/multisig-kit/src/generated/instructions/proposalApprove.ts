@@ -144,7 +144,7 @@ export async function getProposalApproveInstructionAsync<
   TProgramAddress extends Address = typeof SQUADS_MULTISIG_PROGRAM_ADDRESS,
 >(
   input: ProposalApproveAsyncInput<TAccountMultisig, TAccountMember, TAccountProposal>,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress | { readonly address: TProgramAddress } },
 ): Promise<
   ProposalApproveInstruction<
     TProgramAddress,
@@ -160,7 +160,9 @@ export async function getProposalApproveInstructionAsync<
   >
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddressInput = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
 
   // Account meta helper.
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
@@ -236,7 +238,7 @@ export function getProposalApproveInstruction<
   TProgramAddress extends Address = typeof SQUADS_MULTISIG_PROGRAM_ADDRESS,
 >(
   input: ProposalApproveInput<TAccountMultisig, TAccountMember, TAccountProposal>,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress | { readonly address: TProgramAddress } },
 ): ProposalApproveInstruction<
   TProgramAddress,
   ResolvedInstructionAccountMeta<
@@ -247,7 +249,9 @@ export function getProposalApproveInstruction<
   ResolvedInstructionAccountMeta<TAccountProposal, InstructionAccountInputAddress<TAccountProposal>>
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddressInput = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
 
   // Account meta helper.
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');

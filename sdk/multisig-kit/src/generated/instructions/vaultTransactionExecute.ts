@@ -133,7 +133,7 @@ export async function getVaultTransactionExecuteInstructionAsync<
     TAccountTransaction,
     TAccountMember
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress | { readonly address: TProgramAddress } },
 ): Promise<
   VaultTransactionExecuteInstruction<
     TProgramAddress,
@@ -153,7 +153,9 @@ export async function getVaultTransactionExecuteInstructionAsync<
   >
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddressInput = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
 
   // Account meta helper.
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
@@ -254,7 +256,7 @@ export function getVaultTransactionExecuteInstruction<
     TAccountTransaction,
     TAccountMember
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress | { readonly address: TProgramAddress } },
 ): VaultTransactionExecuteInstruction<
   TProgramAddress,
   ResolvedInstructionAccountMeta<
@@ -272,7 +274,9 @@ export function getVaultTransactionExecuteInstruction<
   ResolvedInstructionAccountMeta<TAccountMember, InstructionAccountInputAddress<TAccountMember>>
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddressInput = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
 
   // Account meta helper.
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');

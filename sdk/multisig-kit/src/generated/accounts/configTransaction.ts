@@ -138,7 +138,7 @@ export function decodeConfigTransaction<TAddress extends string = string>(
 
 export async function fetchConfigTransaction<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
-  address: Address<TAddress>,
+  address: Address<TAddress> | HasAddress<TAddress>,
   config?: FetchAccountConfig,
 ): Promise<Account<ConfigTransaction, TAddress>> {
   const maybeAccount = await fetchMaybeConfigTransaction(rpc, address, config);
@@ -148,16 +148,20 @@ export async function fetchConfigTransaction<TAddress extends string = string>(
 
 export async function fetchMaybeConfigTransaction<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
-  address: Address<TAddress>,
+  address: Address<TAddress> | HasAddress<TAddress>,
   config?: FetchAccountConfig,
 ): Promise<MaybeAccount<ConfigTransaction, TAddress>> {
-  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
+  const maybeAccount = await fetchEncodedAccount(
+    rpc,
+    typeof address === 'string' ? address : address.address,
+    config,
+  );
   return decodeConfigTransaction(maybeAccount);
 }
 
 export async function fetchAllConfigTransaction(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
-  addresses: Array<Address>,
+  addresses: Array<Address | HasAddress>,
   config?: FetchAccountsConfig,
 ): Promise<Account<ConfigTransaction>[]> {
   const maybeAccounts = await fetchAllMaybeConfigTransaction(rpc, addresses, config);
@@ -167,17 +171,21 @@ export async function fetchAllConfigTransaction(
 
 export async function fetchAllMaybeConfigTransaction(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
-  addresses: Array<Address>,
+  addresses: Array<Address | HasAddress>,
   config?: FetchAccountsConfig,
 ): Promise<MaybeAccount<ConfigTransaction>[]> {
-  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
+  const maybeAccounts = await fetchEncodedAccounts(
+    rpc,
+    addresses.map((a) => (typeof a === 'string' ? a : a.address)),
+    config,
+  );
   return maybeAccounts.map((maybeAccount) => decodeConfigTransaction(maybeAccount));
 }
 
 export async function fetchConfigTransactionFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: TransactionSeeds,
-  config: FetchAccountConfig & { programAddress?: Address } = {},
+  config: FetchAccountConfig & { programAddress?: Address | HasAddress } = {},
 ): Promise<Account<ConfigTransaction>> {
   const maybeAccount = await fetchMaybeConfigTransactionFromSeeds(rpc, seeds, config);
   assertAccountExists(maybeAccount);
@@ -187,7 +195,7 @@ export async function fetchConfigTransactionFromSeeds(
 export async function fetchMaybeConfigTransactionFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: TransactionSeeds,
-  config: FetchAccountConfig & { programAddress?: Address } = {},
+  config: FetchAccountConfig & { programAddress?: Address | HasAddress } = {},
 ): Promise<MaybeAccount<ConfigTransaction>> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findTransactionPda(seeds, { programAddress });

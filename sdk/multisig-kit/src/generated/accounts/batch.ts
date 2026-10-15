@@ -154,7 +154,7 @@ export function decodeBatch<TAddress extends string = string>(
 
 export async function fetchBatch<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
-  address: Address<TAddress>,
+  address: Address<TAddress> | HasAddress<TAddress>,
   config?: FetchAccountConfig,
 ): Promise<Account<Batch, TAddress>> {
   const maybeAccount = await fetchMaybeBatch(rpc, address, config);
@@ -164,16 +164,20 @@ export async function fetchBatch<TAddress extends string = string>(
 
 export async function fetchMaybeBatch<TAddress extends string = string>(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
-  address: Address<TAddress>,
+  address: Address<TAddress> | HasAddress<TAddress>,
   config?: FetchAccountConfig,
 ): Promise<MaybeAccount<Batch, TAddress>> {
-  const maybeAccount = await fetchEncodedAccount(rpc, address, config);
+  const maybeAccount = await fetchEncodedAccount(
+    rpc,
+    typeof address === 'string' ? address : address.address,
+    config,
+  );
   return decodeBatch(maybeAccount);
 }
 
 export async function fetchAllBatch(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
-  addresses: Array<Address>,
+  addresses: Array<Address | HasAddress>,
   config?: FetchAccountsConfig,
 ): Promise<Account<Batch>[]> {
   const maybeAccounts = await fetchAllMaybeBatch(rpc, addresses, config);
@@ -183,10 +187,14 @@ export async function fetchAllBatch(
 
 export async function fetchAllMaybeBatch(
   rpc: Parameters<typeof fetchEncodedAccounts>[0],
-  addresses: Array<Address>,
+  addresses: Array<Address | HasAddress>,
   config?: FetchAccountsConfig,
 ): Promise<MaybeAccount<Batch>[]> {
-  const maybeAccounts = await fetchEncodedAccounts(rpc, addresses, config);
+  const maybeAccounts = await fetchEncodedAccounts(
+    rpc,
+    addresses.map((a) => (typeof a === 'string' ? a : a.address)),
+    config,
+  );
   return maybeAccounts.map((maybeAccount) => decodeBatch(maybeAccount));
 }
 
@@ -197,7 +205,7 @@ export function getBatchSize(): number {
 export async function fetchBatchFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: TransactionSeeds,
-  config: FetchAccountConfig & { programAddress?: Address } = {},
+  config: FetchAccountConfig & { programAddress?: Address | HasAddress } = {},
 ): Promise<Account<Batch>> {
   const maybeAccount = await fetchMaybeBatchFromSeeds(rpc, seeds, config);
   assertAccountExists(maybeAccount);
@@ -207,7 +215,7 @@ export async function fetchBatchFromSeeds(
 export async function fetchMaybeBatchFromSeeds(
   rpc: Parameters<typeof fetchEncodedAccount>[0],
   seeds: TransactionSeeds,
-  config: FetchAccountConfig & { programAddress?: Address } = {},
+  config: FetchAccountConfig & { programAddress?: Address | HasAddress } = {},
 ): Promise<MaybeAccount<Batch>> {
   const { programAddress, ...fetchConfig } = config;
   const [address] = await findTransactionPda(seeds, { programAddress });

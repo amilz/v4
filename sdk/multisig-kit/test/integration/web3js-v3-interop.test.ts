@@ -59,9 +59,11 @@ async function buildCreateMultisig(createKey: Keypair, members: PublicKey[]) {
 describe('@solana/web3.js v3 interop', () => {
   it('accepts PublicKey inputs and returns Kit addresses', async () => {
     const member = (await Keypair.generate()).publicKey;
-    const [multisig] = await findMultisigPda({ createKey: member }, programConfig);
-    expect(member.toBase58()).toBe(member.address);
-    expect(new PublicKey(multisig).toBase58()).toBe(multisig);
+    const [multisig] = await findMultisigPda(
+      { createKey: member },
+      { programAddress: new PublicKey(programConfig.programAddress) },
+    );
+    expect(multisig).toBe((await findMultisigPda({ createKey: member.address }, programConfig))[0]);
   });
 
   async function expectMultisigCreated(createKey: Keypair, members: PublicKey[]) {
@@ -69,7 +71,7 @@ describe('@solana/web3.js v3 interop', () => {
     const account = await fetchMultisig(ctx.client.rpc, multisig);
     expect(account.data.createKey).toBe(createKey.address);
     expect(account.data.members.map((m) => m.key).sort()).toEqual(
-      members.map((m) => m.toBase58()).sort(),
+      members.map((m) => m.address).sort(),
     );
   }
 

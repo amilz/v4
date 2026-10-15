@@ -23,6 +23,7 @@ import {
   type ExtendedClient,
   type GetAccountInfoApi,
   type GetMultipleAccountsApi,
+  type HasAddress,
   type Instruction,
   type InstructionWithData,
   type ReadonlyUint8Array,
@@ -1196,116 +1197,152 @@ export type SquadsMultisigPluginAccounts = {
 export type SquadsMultisigPluginInstructions = {
   programConfigInit: (
     input: ProgramConfigInitAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getProgramConfigInitInstructionAsync> & SelfPlanAndSendFunctions;
   programConfigSetAuthority: (
     input: ProgramConfigSetAuthorityAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getProgramConfigSetAuthorityInstructionAsync> & SelfPlanAndSendFunctions;
   programConfigSetMultisigCreationFee: (
     input: ProgramConfigSetMultisigCreationFeeAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getProgramConfigSetMultisigCreationFeeInstructionAsync> &
     SelfPlanAndSendFunctions;
   programConfigSetTreasury: (
     input: ProgramConfigSetTreasuryAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getProgramConfigSetTreasuryInstructionAsync> & SelfPlanAndSendFunctions;
   multisigCreate: (
     input: MultisigCreateInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getMultisigCreateInstruction> & SelfPlanAndSendFunctions;
   multisigCreateV2: (
     input: MultisigCreateV2AsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getMultisigCreateV2InstructionAsync> & SelfPlanAndSendFunctions;
   multisigAddMember: (
     input: MultisigAddMemberInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getMultisigAddMemberInstruction> & SelfPlanAndSendFunctions;
   multisigRemoveMember: (
     input: MultisigRemoveMemberInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getMultisigRemoveMemberInstruction> & SelfPlanAndSendFunctions;
   multisigSetTimeLock: (
     input: MultisigSetTimeLockInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getMultisigSetTimeLockInstruction> & SelfPlanAndSendFunctions;
   multisigChangeThreshold: (
     input: MultisigChangeThresholdInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getMultisigChangeThresholdInstruction> & SelfPlanAndSendFunctions;
   multisigSetConfigAuthority: (
     input: MultisigSetConfigAuthorityInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getMultisigSetConfigAuthorityInstruction> & SelfPlanAndSendFunctions;
   multisigSetRentCollector: (
     input: MultisigSetRentCollectorInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getMultisigSetRentCollectorInstruction> & SelfPlanAndSendFunctions;
   multisigAddSpendingLimit: (
     input: MultisigAddSpendingLimitAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getMultisigAddSpendingLimitInstructionAsync> & SelfPlanAndSendFunctions;
   multisigRemoveSpendingLimit: (
     input: MultisigRemoveSpendingLimitInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getMultisigRemoveSpendingLimitInstruction> & SelfPlanAndSendFunctions;
   configTransactionCreate: (
     input: ConfigTransactionCreateAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getConfigTransactionCreateInstructionAsync> & SelfPlanAndSendFunctions;
   configTransactionExecute: (
     input: ConfigTransactionExecuteAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getConfigTransactionExecuteInstructionAsync> & SelfPlanAndSendFunctions;
   vaultTransactionCreate: (
     input: VaultTransactionCreateAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getVaultTransactionCreateInstructionAsync> & SelfPlanAndSendFunctions;
   transactionBufferCreate: (
     input: TransactionBufferCreateAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getTransactionBufferCreateInstructionAsync> & SelfPlanAndSendFunctions;
   transactionBufferClose: (
     input: TransactionBufferCloseAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getTransactionBufferCloseInstructionAsync> & SelfPlanAndSendFunctions;
   transactionBufferExtend: (
     input: TransactionBufferExtendAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getTransactionBufferExtendInstructionAsync> & SelfPlanAndSendFunctions;
   vaultTransactionCreateFromBuffer: (
     input: VaultTransactionCreateFromBufferAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getVaultTransactionCreateFromBufferInstructionAsync> &
     SelfPlanAndSendFunctions;
   vaultTransactionExecute: (
     input: VaultTransactionExecuteAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getVaultTransactionExecuteInstructionAsync> & SelfPlanAndSendFunctions;
   batchCreate: (
     input: BatchCreateAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getBatchCreateInstructionAsync> & SelfPlanAndSendFunctions;
   batchAddTransaction: (
     input: BatchAddTransactionAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getBatchAddTransactionInstructionAsync> & SelfPlanAndSendFunctions;
   batchExecuteTransaction: (
     input: BatchExecuteTransactionAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getBatchExecuteTransactionInstructionAsync> & SelfPlanAndSendFunctions;
   proposalCreate: (
     input: ProposalCreateAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getProposalCreateInstructionAsync> & SelfPlanAndSendFunctions;
   proposalActivate: (
     input: ProposalActivateAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getProposalActivateInstructionAsync> & SelfPlanAndSendFunctions;
   proposalApprove: (
     input: ProposalApproveAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getProposalApproveInstructionAsync> & SelfPlanAndSendFunctions;
   proposalReject: (
     input: ProposalRejectAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getProposalRejectInstructionAsync> & SelfPlanAndSendFunctions;
   proposalCancel: (
     input: ProposalCancelAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getProposalCancelInstructionAsync> & SelfPlanAndSendFunctions;
   proposalCancelV2: (
     input: ProposalCancelV2AsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getProposalCancelV2InstructionAsync> & SelfPlanAndSendFunctions;
   spendingLimitUse: (
     input: SpendingLimitUseAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getSpendingLimitUseInstructionAsync> & SelfPlanAndSendFunctions;
   configTransactionAccountsClose: (
     input: ConfigTransactionAccountsCloseAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getConfigTransactionAccountsCloseInstructionAsync> &
     SelfPlanAndSendFunctions;
   vaultTransactionAccountsClose: (
     input: VaultTransactionAccountsCloseAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getVaultTransactionAccountsCloseInstructionAsync> &
     SelfPlanAndSendFunctions;
   vaultBatchTransactionAccountClose: (
     input: VaultBatchTransactionAccountCloseAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getVaultBatchTransactionAccountCloseInstructionAsync> &
     SelfPlanAndSendFunctions;
   batchAccountsClose: (
     input: BatchAccountsCloseAsyncInput,
+    config?: { programAddress?: Address | HasAddress },
   ) => ReturnType<typeof getBatchAccountsCloseInstructionAsync> & SelfPlanAndSendFunctions;
 };
 
@@ -1327,7 +1364,7 @@ export type SquadsMultisigPluginRequirements = ClientWithRpc<
   ClientWithTransactionPlanning &
   ClientWithTransactionSending;
 
-export function squadsMultisigProgram() {
+export function squadsMultisigProgram(config: { programAddress?: Address | HasAddress } = {}) {
   return <T extends SquadsMultisigPluginRequirements>(
     client: T,
   ): ExtendedClient<T, { squadsMultisig: SquadsMultisigPlugin }> => {
@@ -1345,107 +1382,296 @@ export function squadsMultisigProgram() {
           vaultTransaction: addSelfFetchFunctions(client, getVaultTransactionCodec()),
         },
         instructions: {
-          programConfigInit: (input) =>
-            addSelfPlanAndSendFunctions(client, getProgramConfigInitInstructionAsync(input)),
-          programConfigSetAuthority: (input) =>
+          programConfigInit: (input, instructionConfig) =>
             addSelfPlanAndSendFunctions(
               client,
-              getProgramConfigSetAuthorityInstructionAsync(input),
+              getProgramConfigInitInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
             ),
-          programConfigSetMultisigCreationFee: (input) =>
+          programConfigSetAuthority: (input, instructionConfig) =>
             addSelfPlanAndSendFunctions(
               client,
-              getProgramConfigSetMultisigCreationFeeInstructionAsync(input),
+              getProgramConfigSetAuthorityInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
             ),
-          programConfigSetTreasury: (input) =>
-            addSelfPlanAndSendFunctions(client, getProgramConfigSetTreasuryInstructionAsync(input)),
-          multisigCreate: (input) =>
-            addSelfPlanAndSendFunctions(client, getMultisigCreateInstruction(input)),
-          multisigCreateV2: (input) =>
-            addSelfPlanAndSendFunctions(client, getMultisigCreateV2InstructionAsync(input)),
-          multisigAddMember: (input) =>
-            addSelfPlanAndSendFunctions(client, getMultisigAddMemberInstruction(input)),
-          multisigRemoveMember: (input) =>
-            addSelfPlanAndSendFunctions(client, getMultisigRemoveMemberInstruction(input)),
-          multisigSetTimeLock: (input) =>
-            addSelfPlanAndSendFunctions(client, getMultisigSetTimeLockInstruction(input)),
-          multisigChangeThreshold: (input) =>
-            addSelfPlanAndSendFunctions(client, getMultisigChangeThresholdInstruction(input)),
-          multisigSetConfigAuthority: (input) =>
-            addSelfPlanAndSendFunctions(client, getMultisigSetConfigAuthorityInstruction(input)),
-          multisigSetRentCollector: (input) =>
-            addSelfPlanAndSendFunctions(client, getMultisigSetRentCollectorInstruction(input)),
-          multisigAddSpendingLimit: (input) =>
-            addSelfPlanAndSendFunctions(client, getMultisigAddSpendingLimitInstructionAsync(input)),
-          multisigRemoveSpendingLimit: (input) =>
-            addSelfPlanAndSendFunctions(client, getMultisigRemoveSpendingLimitInstruction(input)),
-          configTransactionCreate: (input) =>
-            addSelfPlanAndSendFunctions(client, getConfigTransactionCreateInstructionAsync(input)),
-          configTransactionExecute: (input) =>
-            addSelfPlanAndSendFunctions(client, getConfigTransactionExecuteInstructionAsync(input)),
-          vaultTransactionCreate: (input) =>
-            addSelfPlanAndSendFunctions(client, getVaultTransactionCreateInstructionAsync(input)),
-          transactionBufferCreate: (input) =>
-            addSelfPlanAndSendFunctions(client, getTransactionBufferCreateInstructionAsync(input)),
-          transactionBufferClose: (input) =>
-            addSelfPlanAndSendFunctions(client, getTransactionBufferCloseInstructionAsync(input)),
-          transactionBufferExtend: (input) =>
-            addSelfPlanAndSendFunctions(client, getTransactionBufferExtendInstructionAsync(input)),
-          vaultTransactionCreateFromBuffer: (input) =>
+          programConfigSetMultisigCreationFee: (input, instructionConfig) =>
             addSelfPlanAndSendFunctions(
               client,
-              getVaultTransactionCreateFromBufferInstructionAsync(input),
+              getProgramConfigSetMultisigCreationFeeInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
             ),
-          vaultTransactionExecute: (input) =>
-            addSelfPlanAndSendFunctions(client, getVaultTransactionExecuteInstructionAsync(input)),
-          batchCreate: (input) =>
-            addSelfPlanAndSendFunctions(client, getBatchCreateInstructionAsync(input)),
-          batchAddTransaction: (input) =>
-            addSelfPlanAndSendFunctions(client, getBatchAddTransactionInstructionAsync(input)),
-          batchExecuteTransaction: (input) =>
-            addSelfPlanAndSendFunctions(client, getBatchExecuteTransactionInstructionAsync(input)),
-          proposalCreate: (input) =>
-            addSelfPlanAndSendFunctions(client, getProposalCreateInstructionAsync(input)),
-          proposalActivate: (input) =>
-            addSelfPlanAndSendFunctions(client, getProposalActivateInstructionAsync(input)),
-          proposalApprove: (input) =>
-            addSelfPlanAndSendFunctions(client, getProposalApproveInstructionAsync(input)),
-          proposalReject: (input) =>
-            addSelfPlanAndSendFunctions(client, getProposalRejectInstructionAsync(input)),
-          proposalCancel: (input) =>
-            addSelfPlanAndSendFunctions(client, getProposalCancelInstructionAsync(input)),
-          proposalCancelV2: (input) =>
-            addSelfPlanAndSendFunctions(client, getProposalCancelV2InstructionAsync(input)),
-          spendingLimitUse: (input) =>
-            addSelfPlanAndSendFunctions(client, getSpendingLimitUseInstructionAsync(input)),
-          configTransactionAccountsClose: (input) =>
+          programConfigSetTreasury: (input, instructionConfig) =>
             addSelfPlanAndSendFunctions(
               client,
-              getConfigTransactionAccountsCloseInstructionAsync(input),
+              getProgramConfigSetTreasuryInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
             ),
-          vaultTransactionAccountsClose: (input) =>
+          multisigCreate: (input, instructionConfig) =>
             addSelfPlanAndSendFunctions(
               client,
-              getVaultTransactionAccountsCloseInstructionAsync(input),
+              getMultisigCreateInstruction(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
             ),
-          vaultBatchTransactionAccountClose: (input) =>
+          multisigCreateV2: (input, instructionConfig) =>
             addSelfPlanAndSendFunctions(
               client,
-              getVaultBatchTransactionAccountCloseInstructionAsync(input),
+              getMultisigCreateV2InstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
             ),
-          batchAccountsClose: (input) =>
-            addSelfPlanAndSendFunctions(client, getBatchAccountsCloseInstructionAsync(input)),
+          multisigAddMember: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getMultisigAddMemberInstruction(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          multisigRemoveMember: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getMultisigRemoveMemberInstruction(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          multisigSetTimeLock: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getMultisigSetTimeLockInstruction(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          multisigChangeThreshold: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getMultisigChangeThresholdInstruction(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          multisigSetConfigAuthority: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getMultisigSetConfigAuthorityInstruction(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          multisigSetRentCollector: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getMultisigSetRentCollectorInstruction(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          multisigAddSpendingLimit: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getMultisigAddSpendingLimitInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          multisigRemoveSpendingLimit: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getMultisigRemoveSpendingLimitInstruction(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          configTransactionCreate: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getConfigTransactionCreateInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          configTransactionExecute: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getConfigTransactionExecuteInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          vaultTransactionCreate: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getVaultTransactionCreateInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          transactionBufferCreate: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getTransactionBufferCreateInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          transactionBufferClose: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getTransactionBufferCloseInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          transactionBufferExtend: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getTransactionBufferExtendInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          vaultTransactionCreateFromBuffer: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getVaultTransactionCreateFromBufferInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          vaultTransactionExecute: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getVaultTransactionExecuteInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          batchCreate: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getBatchCreateInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          batchAddTransaction: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getBatchAddTransactionInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          batchExecuteTransaction: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getBatchExecuteTransactionInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          proposalCreate: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getProposalCreateInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          proposalActivate: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getProposalActivateInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          proposalApprove: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getProposalApproveInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          proposalReject: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getProposalRejectInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          proposalCancel: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getProposalCancelInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          proposalCancelV2: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getProposalCancelV2InstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          spendingLimitUse: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getSpendingLimitUseInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          configTransactionAccountsClose: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getConfigTransactionAccountsCloseInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          vaultTransactionAccountsClose: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getVaultTransactionAccountsCloseInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          vaultBatchTransactionAccountClose: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getVaultBatchTransactionAccountCloseInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
+          batchAccountsClose: (input, instructionConfig) =>
+            addSelfPlanAndSendFunctions(
+              client,
+              getBatchAccountsCloseInstructionAsync(input, {
+                programAddress: instructionConfig?.programAddress ?? config.programAddress,
+              }),
+            ),
         },
         pdas: {
-          programConfig: findProgramConfigPda,
-          multisig: findMultisigPda,
-          vault: findVaultPda,
-          ephemeralSigner: findEphemeralSignerPda,
-          transaction: findTransactionPda,
-          proposal: findProposalPda,
-          batchTransaction: findBatchTransactionPda,
-          spendingLimit: findSpendingLimitPda,
-          transactionBuffer: findTransactionBufferPda,
+          programConfig: (pdaConfig) =>
+            findProgramConfigPda({
+              programAddress: pdaConfig?.programAddress ?? config.programAddress,
+            }),
+          multisig: (seeds, pdaConfig) =>
+            findMultisigPda(seeds, {
+              programAddress: pdaConfig?.programAddress ?? config.programAddress,
+            }),
+          vault: (seeds, pdaConfig) =>
+            findVaultPda(seeds, {
+              programAddress: pdaConfig?.programAddress ?? config.programAddress,
+            }),
+          ephemeralSigner: (seeds, pdaConfig) =>
+            findEphemeralSignerPda(seeds, {
+              programAddress: pdaConfig?.programAddress ?? config.programAddress,
+            }),
+          transaction: (seeds, pdaConfig) =>
+            findTransactionPda(seeds, {
+              programAddress: pdaConfig?.programAddress ?? config.programAddress,
+            }),
+          proposal: (seeds, pdaConfig) =>
+            findProposalPda(seeds, {
+              programAddress: pdaConfig?.programAddress ?? config.programAddress,
+            }),
+          batchTransaction: (seeds, pdaConfig) =>
+            findBatchTransactionPda(seeds, {
+              programAddress: pdaConfig?.programAddress ?? config.programAddress,
+            }),
+          spendingLimit: (seeds, pdaConfig) =>
+            findSpendingLimitPda(seeds, {
+              programAddress: pdaConfig?.programAddress ?? config.programAddress,
+            }),
+          transactionBuffer: (seeds, pdaConfig) =>
+            findTransactionBufferPda(seeds, {
+              programAddress: pdaConfig?.programAddress ?? config.programAddress,
+            }),
         },
         identifyAccount: identifySquadsMultisigAccount,
         identifyInstruction: identifySquadsMultisigInstruction,

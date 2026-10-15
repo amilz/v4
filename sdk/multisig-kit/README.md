@@ -88,7 +88,7 @@ const limits = await gpa.spendingLimits({ multisig, vaultIndex: 0 });
 
 `gpa` exposes every `fetch*Accounts` query bound to `client.rpc` (`multisigs`, `proposals`, `vaultTransactions`, `configTransactions`, `batches`, `vaultBatchTransactions`, `spendingLimits`, `transactionBuffers`, `programConfigs`), so the client RPC must also support `getProgramAccounts`. The plugin execute instructions don't compress the outer transaction with lookup tables; when the inner message uses them and the outer transaction is too large, use `buildVaultTransactionExecuteInstruction` / `buildBatchExecuteTransactionInstruction` and compress with the returned `addressesByLookupTableAddress`.
 
-The plugin targets the mainnet program address; see `test/integration/plugin.test.ts` for vault, batch and config transaction flows and error decoding with `isSquadsMultisigError`.
+The plugin targets the mainnet program address by default; pass `squadsMultisigProgram({ programAddress })` to target another deployment. See `test/integration/plugin.test.ts` for vault, batch and config transaction flows and error decoding with `isSquadsMultisigError`.
 
 ### Create a multisig
 
@@ -173,16 +173,21 @@ const { instruction, addressesByLookupTableAddress } =
 
 ### Custom program address
 
-Every generated builder, PDA finder, `fetch*FromSeeds` and hand-written helper accepts `{ programAddress }`:
+Every generated builder, PDA finder, `fetch*FromSeeds`, hand-written helper, the `squadsMultisigProgram()` plugin and `isSquadsMultisigError` accept `{ programAddress }`:
 
 ```ts
 const config = { programAddress: address('GyhGAqjokLwF9UXdQ2dR5Zwiup242j4mX4J1tSMKyAmD') };
 await findVaultPda({ multisig, vaultIndex: 0 }, config);
 await getProposalApproveInstructionAsync({ multisig, member, transactionIndex }, config);
 await buildVaultTransactionExecuteInstruction({ rpc, multisig, member, transactionIndex }, config);
+const client = createClient()
+  .use(payer(mySigner))
+  .use(solanaDevnetRpc({ rpcUrl: 'https://api.devnet.solana.com' }))
+  .use(squadsMultisigProgram(config));
+isSquadsMultisigError(error, transactionMessage, SQUADS_MULTISIG_ERROR__ALREADY_APPROVED, config);
 ```
 
-Two helpers always target the mainnet address (`SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf`) because the Codama renderer has no option for it: the `squadsMultisigProgram()` client plugin (only its overridden instructions and `gpa` queries accept `{ programAddress }`) and `isSquadsMultisigError`. With a custom deployment, use Kit's `isProgramError(error, transactionMessage, programAddress, code)` with the generated `SQUADS_MULTISIG_ERROR__*` codes and `getSquadsMultisigErrorMessage(code)`.
+The plugin forwards its `programAddress` to every instruction, PDA and `gpa` query; a per-call config takes precedence. Except for the hand-written helpers, these overrides also accept an address-bearing object such as a web3.js `PublicKey`, as do the account addresses passed to generated `fetch*` helpers.
 
 ### With `@solana/web3.js` v3
 
@@ -243,8 +248,8 @@ pnpm generate          # regenerate src/generated from the IDL
 pnpm build             # tsup → lib/ (esm + cjs + d.ts)
 pnpm lint              # prettier --check + tsc --noEmit
 pnpm test              # unit tests
-pnpm build:program     # cargo-build-sbf: testing + mainnet-id builds in ../../target
+pnpm build:program     # cargo-build-sbf: testing build in ../../target/deploy
 pnpm test:integration  # Surfpool (@solana/surfpool) integration tests
 ```
 
-Integration tests boot an in-process Surfnet per file, deploy the program built by `pnpm build:program`, and run against the testing program id `GyhGAqjokLwF9UXdQ2dR5Zwiup242j4mX4J1tSMKyAmD`, except `plugin.test.ts`, which deploys the mainnet-id build to exercise the `squadsMultisigProgram()` plugin.
+Integration tests boot an in-process Surfnet per file, deploy the program built by `pnpm build:program`, and run against the testing program id `GyhGAqjokLwF9UXdQ2dR5Zwiup242j4mX4J1tSMKyAmD`.

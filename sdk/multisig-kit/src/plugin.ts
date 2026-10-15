@@ -1,4 +1,11 @@
-import { extendClient, pipe, type ClientWithRpc, type GetProgramAccountsApi } from '@solana/kit';
+import {
+  extendClient,
+  pipe,
+  type Address,
+  type ClientWithRpc,
+  type GetProgramAccountsApi,
+  type HasAddress,
+} from '@solana/kit';
 import {
   addSelfPlanAndSendFunctions,
   type SelfPlanAndSendFunctions,
@@ -102,9 +109,17 @@ export type SquadsMultisigPluginGpa = {
   programConfigs: WithoutRpc<typeof fetchProgramConfigAccounts>;
 };
 
-export function squadsMultisigProgram() {
+export function squadsMultisigProgram(config: { programAddress?: Address | HasAddress } = {}) {
+  const programAddress =
+    typeof config.programAddress === 'object'
+      ? config.programAddress.address
+      : config.programAddress;
+  const withProgramAddress = <TConfig extends { programAddress?: Address }>(
+    callConfig?: TConfig,
+  ) => ({ ...callConfig, programAddress: callConfig?.programAddress ?? programAddress });
+
   return <T extends SquadsMultisigPluginRequirements>(client: T) => {
-    return pipe(client, generatedSquadsMultisigProgram(), (c) =>
+    return pipe(client, generatedSquadsMultisigProgram({ programAddress }), (c) =>
       extendClient(c, {
         squadsMultisig: <SquadsMultisigPlugin>{
           ...c.squadsMultisig,
@@ -113,48 +128,54 @@ export function squadsMultisigProgram() {
             vaultTransactionCreate: (input, config) =>
               addSelfPlanAndSendFunctions(
                 client,
-                buildVaultTransactionCreateInstruction(input, config),
+                buildVaultTransactionCreateInstruction(input, withProgramAddress(config)),
               ),
             vaultTransactionExecute: (input, config) =>
               addSelfPlanAndSendFunctions(
                 client,
-                buildVaultTransactionExecuteInstruction({ ...input, rpc: client.rpc }, config).then(
-                  ({ instruction }) => instruction,
-                ),
+                buildVaultTransactionExecuteInstruction(
+                  { ...input, rpc: client.rpc },
+                  withProgramAddress(config),
+                ).then(({ instruction }) => instruction),
               ),
             batchAddTransaction: (input, config) =>
               addSelfPlanAndSendFunctions(
                 client,
-                buildBatchAddTransactionInstruction(input, config),
+                buildBatchAddTransactionInstruction(input, withProgramAddress(config)),
               ),
             batchExecuteTransaction: (input, config) =>
               addSelfPlanAndSendFunctions(
                 client,
-                buildBatchExecuteTransactionInstruction({ ...input, rpc: client.rpc }, config).then(
-                  ({ instruction }) => instruction,
-                ),
+                buildBatchExecuteTransactionInstruction(
+                  { ...input, rpc: client.rpc },
+                  withProgramAddress(config),
+                ).then(({ instruction }) => instruction),
               ),
             configTransactionExecute: (input, config) =>
               addSelfPlanAndSendFunctions(
                 client,
-                buildConfigTransactionExecuteInstruction(input, config),
+                buildConfigTransactionExecuteInstruction(input, withProgramAddress(config)),
               ),
           },
           gpa: {
-            multisigs: (filter, config) => fetchMultisigAccounts(client.rpc, filter, config),
-            proposals: (filter, config) => fetchProposalAccounts(client.rpc, filter, config),
+            multisigs: (filter, config) =>
+              fetchMultisigAccounts(client.rpc, filter, withProgramAddress(config)),
+            proposals: (filter, config) =>
+              fetchProposalAccounts(client.rpc, filter, withProgramAddress(config)),
             vaultTransactions: (filter, config) =>
-              fetchVaultTransactionAccounts(client.rpc, filter, config),
+              fetchVaultTransactionAccounts(client.rpc, filter, withProgramAddress(config)),
             configTransactions: (filter, config) =>
-              fetchConfigTransactionAccounts(client.rpc, filter, config),
-            batches: (filter, config) => fetchBatchAccounts(client.rpc, filter, config),
+              fetchConfigTransactionAccounts(client.rpc, filter, withProgramAddress(config)),
+            batches: (filter, config) =>
+              fetchBatchAccounts(client.rpc, filter, withProgramAddress(config)),
             vaultBatchTransactions: (config) =>
-              fetchVaultBatchTransactionAccounts(client.rpc, config),
+              fetchVaultBatchTransactionAccounts(client.rpc, withProgramAddress(config)),
             spendingLimits: (filter, config) =>
-              fetchSpendingLimitAccounts(client.rpc, filter, config),
+              fetchSpendingLimitAccounts(client.rpc, filter, withProgramAddress(config)),
             transactionBuffers: (filter, config) =>
-              fetchTransactionBufferAccounts(client.rpc, filter, config),
-            programConfigs: (config) => fetchProgramConfigAccounts(client.rpc, config),
+              fetchTransactionBufferAccounts(client.rpc, filter, withProgramAddress(config)),
+            programConfigs: (config) =>
+              fetchProgramConfigAccounts(client.rpc, withProgramAddress(config)),
           },
         },
       }),

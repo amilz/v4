@@ -9,12 +9,13 @@ import {
 import { describe, expect, it, vi } from 'vitest';
 import {
   buildVaultTransactionCreateInstruction,
+  findVaultPda,
   squadsMultisigProgram,
   SQUADS_MULTISIG_PROGRAM_ADDRESS,
   type SquadsMultisigPluginRequirements,
 } from '../../src';
 
-function createFakeClient() {
+function createFakeClient(config?: Parameters<typeof squadsMultisigProgram>[0]) {
   const getProgramAccounts = vi.fn(() => ({ send: async () => [] }));
   const sendTransaction = vi.fn(async (instruction: Instruction) => ({ instruction }));
   const client = {
@@ -24,7 +25,7 @@ function createFakeClient() {
     sendTransaction,
     sendTransactions: vi.fn(),
   } as unknown as SquadsMultisigPluginRequirements;
-  return { client: squadsMultisigProgram()(client), getProgramAccounts, sendTransaction };
+  return { client: squadsMultisigProgram(config)(client), getProgramAccounts, sendTransaction };
 }
 
 const randomAddress = async () => (await generateKeyPairSigner()).address;
@@ -91,5 +92,41 @@ describe('squadsMultisigProgram()', () => {
       SQUADS_MULTISIG_PROGRAM_ADDRESS,
       expect.objectContaining({ encoding: 'base64' }),
     );
+  });
+
+  it('targets a custom program address, with per-call configs taking precedence', async () => {
+    const programAddress = await randomAddress();
+    const callProgramAddress = await randomAddress();
+    const { client, getProgramAccounts } = createFakeClient({
+      programAddress: { address: programAddress },
+    });
+    const multisig = await randomAddress();
+    const input = {
+      multisig,
+      member: await generateKeyPairSigner(),
+      transactionIndex: 1n,
+      spendingLimits: [],
+    };
+
+    const [vault] = await client.squadsMultisig.pdas.vault({ multisig, vaultIndex: 0 });
+    expect(vault).toBe((await findVaultPda({ multisig, vaultIndex: 0 }, { programAddress }))[0]);
+    expect((await client.squadsMultisig.instructions.proposalApprove(input)).programAddress).toBe(
+      programAddress,
+    );
+    expect(
+      (await client.squadsMultisig.instructions.configTransactionExecute(input)).programAddress,
+    ).toBe(programAddress);
+    expect(
+      (
+        await client.squadsMultisig.instructions.configTransactionExecute(input, {
+          programAddress: callProgramAddress,
+        })
+      ).programAddress,
+    ).toBe(callProgramAddress);
+
+    await client.squadsMultisig.gpa.programConfigs();
+    await client.squadsMultisig.gpa.programConfigs({ programAddress: callProgramAddress });
+    expect(getProgramAccounts).toHaveBeenNthCalledWith(1, programAddress, expect.anything());
+    expect(getProgramAccounts).toHaveBeenNthCalledWith(2, callProgramAddress, expect.anything());
   });
 });

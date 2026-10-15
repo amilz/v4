@@ -154,7 +154,7 @@ export async function getVaultBatchTransactionAccountCloseInstructionAsync<
     TAccountRentCollector,
     TAccountSystemProgram
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress | { readonly address: TProgramAddress } },
 ): Promise<
   VaultBatchTransactionAccountCloseInstruction<
     TProgramAddress,
@@ -182,7 +182,9 @@ export async function getVaultBatchTransactionAccountCloseInstructionAsync<
   >
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddressInput = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
 
   // Account meta helper.
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
@@ -319,7 +321,7 @@ export function getVaultBatchTransactionAccountCloseInstruction<
     TAccountRentCollector,
     TAccountSystemProgram
   >,
-  config?: { programAddress?: TProgramAddress },
+  config?: { programAddress?: TProgramAddress | { readonly address: TProgramAddress } },
 ): VaultBatchTransactionAccountCloseInstruction<
   TProgramAddress,
   ResolvedInstructionAccountMeta<
@@ -345,7 +347,9 @@ export function getVaultBatchTransactionAccountCloseInstruction<
   >
 > {
   // Program address.
-  const programAddress = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddressInput = config?.programAddress ?? SQUADS_MULTISIG_PROGRAM_ADDRESS;
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
 
   // Account meta helper.
   const getAccountMeta = getAccountMetaFactory(programAddress, 'programId');
