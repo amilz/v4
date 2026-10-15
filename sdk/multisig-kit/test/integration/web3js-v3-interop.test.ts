@@ -74,11 +74,7 @@ describe('@solana/web3.js v3 interop', () => {
     );
   }
 
-  // web3.js 3.0.2 imports public keys as non-extractable CryptoKeys before calling
-  // @solana/keys `verifySignature`, which since Kit 8.5 throws
-  // SOLANA_ERROR__KEYS__VERIFICATION_REQUIRES_EXTRACTABLE_PUBLIC_KEY. Any legacy
-  // `Transaction.serialize()` with the default `verifySignatures: true` therefore fails.
-  it.skip('KNOWN BUG (web3.js 3.0.2): sendAndConfirmTransaction with a legacy Transaction', async () => {
+  it('sends a legacy Transaction with sendAndConfirmTransaction', async () => {
     const createKey = await Keypair.generate();
     const members = [(await Keypair.generate()).publicKey];
     const tx = new Transaction().add(await buildCreateMultisig(createKey, members));

@@ -36,8 +36,8 @@ importers:
         specifier: 1.6.1
         version: 1.6.1(@solana/kit-plugin-rpc@0.18.0(@solana/kit@8.5.0(typescript@5.9.3)))(@solana/kit-plugin-signer@0.18.0(@solana/kit@8.5.0(typescript@5.9.3)))(@solana/kit@8.5.0(typescript@5.9.3))
       '@solana/web3.js':
-        specifier: 3.0.2
-        version: 3.0.2(typescript@5.9.3)
+        specifier: 3.1.0
+        version: 3.1.0(typescript@5.9.3)
       '@types/node':
         specifier: ^26.6.5
         version: 26.6.5
@@ -994,8 +994,8 @@ packages:
       typescript:
         optional: true
 
-  '@solana/web3.js@3.0.2':
-    resolution: {integrity: sha512-xgA48BPOknXdwcXwOJLcjqQmJPQbBhMmE+OcHOrS25+lsbDePEkLyGwJbzB5V7UIm2GjkXLAPE6PDKj0YrLOOA==}
+  '@solana/web3.js@3.1.0':
+    resolution: {integrity: sha512-WdXc9Tua/1H09vwPDchjmqm6iGbB7DsWpSS7N0kWiTiBXmkUpTiu2Yv12ERm2VuCTa4/IxFyop29mVKIamvznQ==}
     engines: {node: '>=20.18.0'}
 
   '@types/chai@5.2.3':
@@ -2409,7 +2409,7 @@ snapshots:
     transitivePeerDependencies:
       - fastestsmallesttextencoderdecoder
 
-  '@solana/web3.js@3.0.2(typescript@5.9.3)':
+  '@solana/web3.js@3.1.0(typescript@5.9.3)':
     dependencies:
       '@noble/curves': 1.9.7
       '@noble/hashes': 1.8.0
