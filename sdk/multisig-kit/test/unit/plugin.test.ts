@@ -123,10 +123,22 @@ describe('squadsMultisigProgram()', () => {
         })
       ).programAddress,
     ).toBe(callProgramAddress);
+    expect(
+      (
+        await client.squadsMultisig.instructions.configTransactionExecute(input, {
+          programAddress: { address: callProgramAddress },
+        })
+      ).programAddress,
+    ).toBe(callProgramAddress);
 
     await client.squadsMultisig.gpa.programConfigs();
     await client.squadsMultisig.gpa.programConfigs({ programAddress: callProgramAddress });
+    await client.squadsMultisig.gpa.proposals(
+      { multisig: { address: multisig } },
+      { programAddress: { address: callProgramAddress } },
+    );
     expect(getProgramAccounts).toHaveBeenNthCalledWith(1, programAddress, expect.anything());
     expect(getProgramAccounts).toHaveBeenNthCalledWith(2, callProgramAddress, expect.anything());
+    expect(getProgramAccounts).toHaveBeenNthCalledWith(3, callProgramAddress, expect.anything());
   });
 });

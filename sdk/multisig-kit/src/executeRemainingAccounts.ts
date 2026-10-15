@@ -5,6 +5,7 @@ import {
   type Address,
   type AddressesByLookupTableAddress,
   type GetMultipleAccountsApi,
+  type HasAddress,
   type ReadonlyUint8Array,
   type Rpc,
 } from '@solana/kit';
@@ -40,7 +41,7 @@ export async function getExecuteRemainingAccounts(
     addressesByLookupTableAddress: localLookupTables = {},
     rpc,
   }: GetExecuteRemainingAccountsInput,
-  config: { programAddress?: Address } = {},
+  config: { programAddress?: Address | HasAddress } = {},
 ): Promise<ExecuteRemainingAccounts> {
   const ephemeralSigners = new Set(
     await Promise.all(

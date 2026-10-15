@@ -92,6 +92,26 @@ describe('gpa helpers', () => {
     expect(calls[1].program).toBe(programAddress);
   });
 
+  it('accepts address-bearing objects for the program address and filters', async () => {
+    const [multisigA, multisigB] = await Promise.all([randomAddress(), randomAddress()]);
+    const accounts = await Promise.all(
+      [multisigA, multisigB].map(async (multisig) => ({
+        pubkey: await randomAddress(),
+        data: getProposalEncoder().encode(proposal(multisig, { __kind: 'Active', timestamp: 0 })),
+      })),
+    );
+    const { rpc, calls } = createFakeRpc(accounts);
+    const programAddress = address('GyhGAqjokLwF9UXdQ2dR5Zwiup242j4mX4J1tSMKyAmD');
+
+    const proposals = await fetchProposalAccounts(
+      rpc,
+      { multisig: { address: multisigA } },
+      { programAddress: { address: programAddress } },
+    );
+    expect(calls[0].program).toBe(programAddress);
+    expect(proposals.map((a) => a.address)).toEqual([accounts[0].pubkey]);
+  });
+
   it('filters multisigs by createKey and configAuthority', async () => {
     const [createKeyA, createKeyB, authority] = await Promise.all(
       Array.from({ length: 3 }, randomAddress),

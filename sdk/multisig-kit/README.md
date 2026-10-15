@@ -187,7 +187,7 @@ const client = createClient()
 isSquadsMultisigError(error, transactionMessage, SQUADS_MULTISIG_ERROR__ALREADY_APPROVED, config);
 ```
 
-The plugin forwards its `programAddress` to every instruction, PDA and `gpa` query; a per-call config takes precedence. Except for the hand-written helpers, these overrides also accept an address-bearing object such as a web3.js `PublicKey`, as do the account addresses passed to generated `fetch*` helpers.
+The plugin forwards its `programAddress` to every instruction, PDA and `gpa` query; a per-call config takes precedence. These overrides also accept an address-bearing object such as a web3.js `PublicKey`, as do the account addresses passed to generated `fetch*` helpers, the `multisig` and `spendingLimits` inputs of the hand-written `build*Instruction` helpers, and the address filters of `fetch*Accounts` queries.
 
 ### With `@solana/web3.js` v3
 
@@ -204,7 +204,7 @@ import {
 
 const alice = Keypair.generate();
 const instruction = await getProposalApproveInstructionAsync({
-  multisig: new PublicKey(multisigAddress).address,
+  multisig: new PublicKey(multisigAddress),
   member: alice,
   transactionIndex,
 });

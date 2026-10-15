@@ -40,7 +40,7 @@ const connection = new Connection(ctx.client.rpcUrl, {
 async function buildCreateMultisig(createKey: Keypair, members: PublicKey[]) {
   return getMultisigCreateV2InstructionAsync(
     {
-      treasury: new PublicKey(ctx.treasury),
+      treasury: ctx.treasury,
       createKey,
       creator: ctx.client.payer,
       configAuthority: null,
@@ -59,19 +59,18 @@ async function buildCreateMultisig(createKey: Keypair, members: PublicKey[]) {
 describe('@solana/web3.js v3 interop', () => {
   it('accepts PublicKey inputs and returns Kit addresses', async () => {
     const member = (await Keypair.generate()).publicKey;
-    const [multisig] = await findMultisigPda(
-      { createKey: member },
-      { programAddress: new PublicKey(programConfig.programAddress) },
+    const [multisig] = await findMultisigPda({ createKey: member }, programConfig);
+    expect(multisig).toBe(
+      (await findMultisigPda({ createKey: member.toBase58() }, programConfig))[0],
     );
-    expect(multisig).toBe((await findMultisigPda({ createKey: member.address }, programConfig))[0]);
   });
 
   async function expectMultisigCreated(createKey: Keypair, members: PublicKey[]) {
     const [multisig] = await findMultisigPda({ createKey: createKey.publicKey }, programConfig);
     const account = await fetchMultisig(ctx.client.rpc, multisig);
-    expect(account.data.createKey).toBe(createKey.address);
+    expect(account.data.createKey).toBe(createKey.publicKey.toBase58());
     expect(account.data.members.map((m) => m.key).sort()).toEqual(
-      members.map((m) => m.address).sort(),
+      members.map((m) => m.toBase58()).sort(),
     );
   }
 
@@ -128,19 +127,21 @@ describe('@solana/web3.js v3 interop', () => {
     const signature = await connection.sendTransaction(tx);
     await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight });
 
-    const [multisig] = await findMultisigPda({ createKey: createKey.address }, programConfig);
+    const [multisig] = await findMultisigPda({ createKey: createKey.publicKey }, programConfig);
     const account = await fetchMultisig(ctx.client.rpc, multisig);
     expect(account.programAddress).toBe(programConfig.programAddress);
-    expect(account.data.members).toEqual([{ key: member.address, permissions: allPermissions() }]);
+    expect(account.data.members).toEqual([
+      { key: member.toBase58(), permissions: allPermissions() },
+    ]);
   });
 
   describe('vault transaction lifecycle driven from web3.js v3', () => {
     /** web3.js v3 has no converter, so a `TransactionInstruction` is mapped to a Kit `Instruction` by hand. */
     function toKitInstruction(ix: TransactionInstruction): Instruction {
       return {
-        programAddress: ix.programId.address,
+        programAddress: ix.programId.toBase58(),
         accounts: ix.keys.map(({ pubkey, isSigner, isWritable }) => ({
-          address: pubkey.address,
+          address: pubkey.toBase58(),
           role: isSigner
             ? isWritable
               ? AccountRole.WRITABLE_SIGNER
@@ -206,7 +207,7 @@ describe('@solana/web3.js v3 interop', () => {
         [
           await getMultisigCreateV2InstructionAsync(
             {
-              treasury: new PublicKey(ctx.treasury),
+              treasury: ctx.treasury,
               createKey,
               creator: payer,
               configAuthority: null,
@@ -231,7 +232,7 @@ describe('@solana/web3.js v3 interop', () => {
       expect(multisigAccount.threshold).toBe(2);
       expect(multisigAccount.transactionIndex).toBe(0n);
       expect(multisigAccount.members.map((m) => m.key).sort()).toEqual(
-        members.map((m) => m.address).sort(),
+        members.map((m) => m.publicKey.toBase58()).sort(),
       );
 
       ctx.fund(vault, 2);
@@ -282,7 +283,9 @@ describe('@solana/web3.js v3 interop', () => {
       const proposalInfo = await connection.getAccountInfo(new PublicKey(proposal));
       const approved = getProposalDecoder().decode(proposalInfo!.data);
       expect(approved.status.__kind).toBe('Approved');
-      expect([...approved.approved].sort()).toEqual([alice.address, bob.address].sort());
+      expect([...approved.approved].sort()).toEqual(
+        [alice.publicKey.toBase58(), bob.publicKey.toBase58()].sort(),
+      );
 
       const { instruction } = await buildVaultTransactionExecuteInstruction(
         { rpc: ctx.client.rpc, multisig, member: executor, transactionIndex },

@@ -102,6 +102,27 @@ describe('buildVaultTransactionCreateInstruction', () => {
     const data = getVaultTransactionCreateInstructionDataDecoder().decode(instruction.data);
     expect(hex.decode(data.transactionMessage)).toBe(scenario.expected.compactMessageHex);
   });
+
+  it('accepts address-bearing objects for the program address and multisig', async () => {
+    const creator = await generateKeyPairSigner();
+    const scenario = fixtures.scenarios['sol-transfer'];
+    const instruction = await buildVaultTransactionCreateInstruction(
+      {
+        multisig: { address: multisig },
+        transactionIndex: 1n,
+        creator,
+        vaultIndex: 0,
+        ephemeralSigners: 0,
+        instructions: [transfer(recipient)],
+      },
+      { programAddress: { address: programAddress } },
+    );
+    expect(instruction.programAddress).toBe(programAddress);
+    expect(instruction.accounts[0].address).toBe(multisig);
+    expect(instruction.accounts[1].address).toBe(fixtures.transaction);
+    const data = getVaultTransactionCreateInstructionDataDecoder().decode(instruction.data);
+    expect(hex.decode(data.transactionMessage)).toBe(scenario.expected.compactMessageHex);
+  });
 });
 
 describe('buildBatchAddTransactionInstruction', () => {
@@ -182,6 +203,39 @@ describe('buildVaultTransactionExecuteInstruction', () => {
     ]);
     expect(addressesByLookupTableAddress).toEqual({});
   });
+
+  it('accepts address-bearing objects for the program address and multisig', async () => {
+    const member = await generateKeyPairSigner();
+    const [transaction] = await findTransactionPda(
+      { multisig, transactionIndex: 1n },
+      { programAddress },
+    );
+    const message = toVaultTransactionMessage([transfer(recipient)]);
+    const rpc = createFakeRpc({
+      [transaction]: new Uint8Array(
+        getVaultTransactionEncoder().encode({
+          multisig,
+          creator: member.address,
+          index: 1n,
+          bump: 255,
+          vaultIndex: 0,
+          vaultBump: 255,
+          ephemeralSignerBumps: new Uint8Array(),
+          message,
+        }),
+      ),
+    });
+
+    const { instruction } = await buildVaultTransactionExecuteInstruction(
+      { rpc, multisig: { address: multisig }, member, transactionIndex: 1n },
+      { programAddress: { address: programAddress } },
+    );
+
+    expect(instruction.programAddress).toBe(programAddress);
+    expect(instruction.accounts[0].address).toBe(multisig);
+    expect(instruction.accounts[2].address).toBe(transaction);
+    expect(instruction.accounts[4]).toEqual({ address: vault, role: AccountRole.WRITABLE });
+  });
 });
 
 describe('buildBatchExecuteTransactionInstruction', () => {
@@ -251,5 +305,23 @@ describe('buildConfigTransactionExecuteInstruction', () => {
       address: lookupTable,
       role: AccountRole.WRITABLE,
     });
+  });
+
+  it('accepts address-bearing objects for the program address and spending limits', async () => {
+    const member = await generateKeyPairSigner();
+    const instruction = await buildConfigTransactionExecuteInstruction(
+      {
+        multisig,
+        member,
+        transactionIndex: 1n,
+        spendingLimits: [{ address: lookupTable }, recipient],
+      },
+      { programAddress: { address: programAddress } },
+    );
+    expect(instruction.programAddress).toBe(programAddress);
+    expect(instruction.accounts.slice(-2)).toEqual([
+      { address: lookupTable, role: AccountRole.WRITABLE },
+      { address: recipient, role: AccountRole.WRITABLE },
+    ]);
   });
 });

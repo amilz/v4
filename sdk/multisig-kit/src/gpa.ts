@@ -10,6 +10,7 @@ import {
   type Decoder,
   type GetProgramAccountsApi,
   type GetProgramAccountsMemcmpFilter,
+  type HasAddress,
   type ReadonlyUint8Array,
   type Rpc,
 } from '@solana/kit';
@@ -45,28 +46,28 @@ import {
   type VaultTransaction,
 } from './generated';
 
-type ProgramAddressConfig = { programAddress?: Address };
+type ProgramAddressConfig = { programAddress?: Address | HasAddress };
 
 export type MultisigAccountsFilter = {
-  createKey?: Address;
-  configAuthority?: Address;
+  createKey?: Address | HasAddress;
+  configAuthority?: Address | HasAddress;
 };
 
 export type ProposalAccountsFilter = {
-  multisig?: Address;
+  multisig?: Address | HasAddress;
   status?: ProposalStatus['__kind'];
 };
 
 /** Filter shared by `VaultTransaction`, `ConfigTransaction`, `Batch` and `TransactionBuffer`. */
 export type TransactionAccountsFilter = {
-  multisig?: Address;
-  creator?: Address;
+  multisig?: Address | HasAddress;
+  creator?: Address | HasAddress;
 };
 
 export type SpendingLimitAccountsFilter = {
-  multisig?: Address;
+  multisig?: Address | HasAddress;
   vaultIndex?: number;
-  mint?: Address;
+  mint?: Address | HasAddress;
 };
 
 const PROPOSAL_STATUS_KINDS: readonly ProposalStatus['__kind'][] = [
@@ -212,9 +213,11 @@ async function fetchProgramAccounts<TData extends object>(
   rpc: Rpc<GetProgramAccountsApi>,
   discriminator: ReadonlyUint8Array,
   decoder: Decoder<TData>,
-  { programAddress = SQUADS_MULTISIG_PROGRAM_ADDRESS }: ProgramAddressConfig,
+  { programAddress: programAddressInput = SQUADS_MULTISIG_PROGRAM_ADDRESS }: ProgramAddressConfig,
   filters: (GetProgramAccountsMemcmpFilter | undefined)[] = [],
 ): Promise<Account<TData>[]> {
+  const programAddress =
+    typeof programAddressInput === 'string' ? programAddressInput : programAddressInput.address;
   const accounts = await rpc
     .getProgramAccounts(programAddress, {
       encoding: 'base64',
@@ -230,8 +233,10 @@ function transactionFilters({ multisig, creator }: TransactionAccountsFilter) {
   return [addressFilter(8, multisig), addressFilter(40, creator)];
 }
 
-function addressFilter(offset: number, address: Address | undefined) {
-  return address === undefined ? undefined : memcmp(offset, getAddressEncoder().encode(address));
+function addressFilter(offset: number, input: Address | HasAddress | undefined) {
+  if (input === undefined) return undefined;
+  const address = typeof input === 'string' ? input : input.address;
+  return memcmp(offset, getAddressEncoder().encode(address));
 }
 
 function memcmp(offset: number, bytes: ReadonlyUint8Array): GetProgramAccountsMemcmpFilter {

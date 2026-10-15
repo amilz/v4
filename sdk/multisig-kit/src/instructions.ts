@@ -5,6 +5,7 @@ import {
   type AddressesByLookupTableAddress,
   type GetAccountInfoApi,
   type GetMultipleAccountsApi,
+  type HasAddress,
   type Instruction,
   type InstructionWithAccounts,
   type InstructionWithData,
@@ -32,7 +33,7 @@ import {
   type VaultTransactionCreateAsyncInput,
 } from './generated';
 
-type ProgramAddressConfig = { programAddress?: Address };
+type ProgramAddressConfig = { programAddress?: Address | HasAddress };
 
 export type InstructionWithRemainingAccounts = Instruction &
   InstructionWithAccounts<readonly AccountMeta[]> &
@@ -55,7 +56,7 @@ export type BuildVaultTransactionCreateInstructionInput = Omit<
   VaultTransactionCreateAsyncInput,
   'multisig' | 'transactionMessage'
 > &
-  InnerMessageInput & { multisig: Address };
+  InnerMessageInput & { multisig: Address | HasAddress };
 
 /** Creates a `vaultTransactionCreate` instruction wrapping the given instructions. */
 export async function buildVaultTransactionCreateInstruction(
@@ -82,7 +83,7 @@ export async function buildVaultTransactionCreateInstruction(
 
 export type BuildVaultTransactionExecuteInstructionInput = {
   rpc: Rpc<GetAccountInfoApi & GetMultipleAccountsApi>;
-  multisig: Address;
+  multisig: Address | HasAddress;
   /** Member of the multisig with the `Execute` permission. */
   member: TransactionSigner;
   transactionIndex: number | bigint;
@@ -137,7 +138,7 @@ export type BuildBatchAddTransactionInstructionInput = Omit<
   'multisig' | 'transactionMessage'
 > &
   InnerMessageInput & {
-    multisig: Address;
+    multisig: Address | HasAddress;
     /** Index of the vault the batch belongs to. */
     vaultIndex: number;
   };
@@ -165,7 +166,7 @@ export async function buildBatchAddTransactionInstruction(
 
 export type BuildBatchExecuteTransactionInstructionInput = {
   rpc: Rpc<GetAccountInfoApi & GetMultipleAccountsApi>;
-  multisig: Address;
+  multisig: Address | HasAddress;
   /** Member of the multisig with the `Execute` permission. */
   member: TransactionSigner;
   batchIndex: number | bigint;
@@ -226,7 +227,7 @@ export async function buildBatchExecuteTransactionInstruction(
 
 export type BuildConfigTransactionExecuteInstructionInput = ConfigTransactionExecuteAsyncInput & {
   /** Spending limits added or removed by the config transaction. */
-  spendingLimits?: readonly Address[];
+  spendingLimits?: readonly (Address | HasAddress)[];
 };
 
 /** Creates a `configTransactionExecute` instruction, passing `spendingLimits` as remaining accounts. */
@@ -234,12 +235,13 @@ export async function buildConfigTransactionExecuteInstruction(
   { spendingLimits = [], ...input }: BuildConfigTransactionExecuteInstructionInput,
   config: ProgramAddressConfig = {},
 ): Promise<InstructionWithRemainingAccounts> {
-  const instruction = await getConfigTransactionExecuteInstructionAsync(input, {
-    programAddress: config.programAddress,
-  });
+  const instruction = await getConfigTransactionExecuteInstructionAsync(input, config);
   return appendRemainingAccounts(
     instruction,
-    spendingLimits.map((address) => ({ address, role: AccountRole.WRITABLE })),
+    spendingLimits.map((spendingLimit) => ({
+      address: typeof spendingLimit === 'string' ? spendingLimit : spendingLimit.address,
+      role: AccountRole.WRITABLE,
+    })),
   );
 }
 

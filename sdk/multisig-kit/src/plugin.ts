@@ -110,16 +110,12 @@ export type SquadsMultisigPluginGpa = {
 };
 
 export function squadsMultisigProgram(config: { programAddress?: Address | HasAddress } = {}) {
-  const programAddress =
-    typeof config.programAddress === 'object'
-      ? config.programAddress.address
-      : config.programAddress;
-  const withProgramAddress = <TConfig extends { programAddress?: Address }>(
-    callConfig?: TConfig,
-  ) => ({ ...callConfig, programAddress: callConfig?.programAddress ?? programAddress });
+  const withProgramAddress = (callConfig?: { programAddress?: Address | HasAddress }) => ({
+    programAddress: callConfig?.programAddress ?? config.programAddress,
+  });
 
   return <T extends SquadsMultisigPluginRequirements>(client: T) => {
-    return pipe(client, generatedSquadsMultisigProgram({ programAddress }), (c) =>
+    return pipe(client, generatedSquadsMultisigProgram(config), (c) =>
       extendClient(c, {
         squadsMultisig: <SquadsMultisigPlugin>{
           ...c.squadsMultisig,
