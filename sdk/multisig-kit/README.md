@@ -10,12 +10,13 @@ Proof-of-concept [Solana Kit](https://github.com/anza-xyz/kit) SDK for the Squad
 
 | Area                                                                                               | Source                                         |
 | -------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| Instructions, accounts, types, errors, program plugin                                              | Codama (`src/generated`, from the IDL)         |
+| Instructions, accounts, types, errors, base program plugin                                         | Codama (`src/generated`, from the IDL)         |
 | PDA finders (`findMultisigPda`, `findVaultPda`, `findProposalPda`, …) and instruction PDA defaults | Codama, configured in `scripts/generate.ts`    |
 | Compact transaction message codec (`getCompactTransactionMessageCodec`)                            | Codama, type defined in `scripts/generate.ts`  |
 | `compileCompactTransactionMessage`, execute remaining accounts, `build*Instruction` helpers        | Hand-written (`src/*.ts`) using Kit primitives |
 | `Permission` / `createPermissions` / `allPermissions` / `hasPermission`, memo size helpers         | Hand-written                                   |
 | `getProgramAccounts` queries (`fetchMultisigAccounts`, `fetchProposalAccounts`, …)                 | Hand-written                                   |
+| `squadsMultisigProgram()` client plugin (wraps the generated one, see below)                       | Hand-written (`src/plugin.ts`)                 |
 
 The legacy Anchor 0.29 IDL carries no PDA seeds, so `scripts/generate.ts` adds the program's PDAs and wires them as instruction account defaults. The generated `get*InstructionAsync` builders derive `programConfig`, `multisig`, `transaction`, `proposal`, `batch`, `transactionBuffer` and `vault` accounts from `createKey`, `transactionIndex`, `batchIndex`, `bufferIndex` and `vaultIndex`.
 
@@ -51,7 +52,43 @@ await client.squadsMultisig.instructions
 const { data } = await client.squadsMultisig.accounts.multisig.fetch(multisig);
 ```
 
-Instruction methods return the instruction augmented with `.planTransaction()` and `.sendTransaction()`. The plugin targets the mainnet program address; see `test/integration/plugin.test.ts` for a full vault transaction flow and error decoding with `isSquadsMultisigError`.
+Instruction methods return the instruction augmented with `.planTransaction()` and `.sendTransaction()`. The exported `squadsMultisigProgram()` wraps the Codama-generated plugin (same `accounts`, `pdas` and instructions) and replaces the instructions whose raw form is incomplete with the `build*Instruction` helpers:
+
+| Plugin instruction         | Difference from the raw generated instruction                                   |
+| -------------------------- | ------------------------------------------------------------------------------- |
+| `vaultTransactionCreate`   | Takes `instructions` (+ optional lookup tables) instead of `transactionMessage` |
+| `batchAddTransaction`      | Takes `instructions` and `vaultIndex` instead of `transactionMessage`           |
+| `vaultTransactionExecute`  | Fetches the stored message with `client.rpc` and appends its remaining accounts |
+| `batchExecuteTransaction`  | Fetches the batch and its transaction and appends the remaining accounts        |
+| `configTransactionExecute` | Takes `spendingLimits` and passes them as remaining accounts                    |
+
+```ts
+const { instructions, gpa } = client.squadsMultisig;
+
+await instructions
+  .vaultTransactionCreate({
+    multisig,
+    creator: alice,
+    vaultIndex: 0,
+    ephemeralSigners: 0,
+    transactionIndex,
+    instructions: [
+      getTransferSolInstruction({ source: createNoopSigner(vault), destination, amount }),
+    ],
+  })
+  .sendTransaction();
+// ...proposalCreate / proposalApprove, then:
+await instructions
+  .vaultTransactionExecute({ multisig, member, transactionIndex })
+  .sendTransaction();
+
+const approved = await gpa.proposals({ multisig, status: 'Approved' });
+const limits = await gpa.spendingLimits({ multisig, vaultIndex: 0 });
+```
+
+`gpa` exposes every `fetch*Accounts` query bound to `client.rpc` (`multisigs`, `proposals`, `vaultTransactions`, `configTransactions`, `batches`, `vaultBatchTransactions`, `spendingLimits`, `transactionBuffers`, `programConfigs`), so the client RPC must also support `getProgramAccounts`. The plugin execute instructions don't compress the outer transaction with lookup tables; when the inner message uses them and the outer transaction is too large, use `buildVaultTransactionExecuteInstruction` / `buildBatchExecuteTransactionInstruction` and compress with the returned `addressesByLookupTableAddress`.
+
+The plugin targets the mainnet program address; see `test/integration/plugin.test.ts` for vault, batch and config transaction flows and error decoding with `isSquadsMultisigError`.
 
 ### Create a multisig
 
@@ -145,7 +182,7 @@ await getProposalApproveInstructionAsync({ multisig, member, transactionIndex },
 await buildVaultTransactionExecuteInstruction({ rpc, multisig, member, transactionIndex }, config);
 ```
 
-Two generated helpers always target the mainnet address (`SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf`) because the Codama renderer has no option for it: the `squadsMultisigProgram()` client plugin and `isSquadsMultisigError`. With a custom deployment, use Kit's `isProgramError(error, transactionMessage, programAddress, code)` with the generated `SQUADS_MULTISIG_ERROR__*` codes and `getSquadsMultisigErrorMessage(code)`.
+Two helpers always target the mainnet address (`SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf`) because the Codama renderer has no option for it: the `squadsMultisigProgram()` client plugin (only its overridden instructions and `gpa` queries accept `{ programAddress }`) and `isSquadsMultisigError`. With a custom deployment, use Kit's `isProgramError(error, transactionMessage, programAddress, code)` with the generated `SQUADS_MULTISIG_ERROR__*` codes and `getSquadsMultisigErrorMessage(code)`.
 
 ### With `@solana/web3.js` v3
 
@@ -210,4 +247,4 @@ pnpm build:program     # cargo-build-sbf: testing + mainnet-id builds in ../../t
 pnpm test:integration  # Surfpool (@solana/surfpool) integration tests
 ```
 
-Integration tests boot an in-process Surfnet per file, deploy the program built by `pnpm build:program`, and run against the testing program id `GyhGAqjokLwF9UXdQ2dR5Zwiup242j4mX4J1tSMKyAmD`, except `plugin.test.ts`, which deploys the mainnet-id build to exercise the generated `squadsMultisigProgram()` plugin.
+Integration tests boot an in-process Surfnet per file, deploy the program built by `pnpm build:program`, and run against the testing program id `GyhGAqjokLwF9UXdQ2dR5Zwiup242j4mX4J1tSMKyAmD`, except `plugin.test.ts`, which deploys the mainnet-id build to exercise the `squadsMultisigProgram()` plugin.
