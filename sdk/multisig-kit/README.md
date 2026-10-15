@@ -15,6 +15,7 @@ Proof-of-concept [Solana Kit](https://github.com/anza-xyz/kit) SDK for the Squad
 | Compact transaction message codec (`getCompactTransactionMessageCodec`)                            | Codama, type defined in `scripts/generate.ts`  |
 | `compileCompactTransactionMessage`, execute remaining accounts, `build*Instruction` helpers        | Hand-written (`src/*.ts`) using Kit primitives |
 | `Permission` / `createPermissions` / `allPermissions` / `hasPermission`, memo size helpers         | Hand-written                                   |
+| `getProgramAccounts` queries (`fetchMultisigAccounts`, `fetchProposalAccounts`, …)                 | Hand-written                                   |
 
 The legacy Anchor 0.29 IDL carries no PDA seeds, so `scripts/generate.ts` adds the program's PDAs and wires them as instruction account defaults. The generated `get*InstructionAsync` builders derive `programConfig`, `multisig`, `transaction`, `proposal`, `batch`, `transactionBuffer` and `vault` accounts from `createKey`, `transactionIndex`, `batchIndex`, `bufferIndex` and `vaultIndex`.
 
@@ -188,6 +189,7 @@ Known issue with `@solana/web3.js@3.0.2` + `@solana/kit@8.5`: legacy `Transactio
 | `utils.transactionMessageToMultisigTransactionMessageBytes`        | `getCompactTransactionMessageEncoder().encode(compileCompactTransactionMessage(...))` |
 | `utils.accountsForTransactionExecute`                              | `getExecuteRemainingAccounts`                                                         |
 | `accounts.Multisig.fromAccountAddress(connection, address)`        | `fetchMultisig(rpc, address)`                                                         |
+| `accounts.Proposal.gpaBuilder().addFilter(...)`, …                 | `fetchProposalAccounts(rpc, { multisig, status })`, `fetchMultisigAccounts`, …        |
 | `types.Permissions.fromPermissions([...])` / `.all()` / `.has()`   | `createPermissions([...])` / `allPermissions()` / `hasPermission()`                   |
 | `errors.translateAndThrowAnchorError`                              | Kit `isProgramError` + `getSquadsMultisigErrorMessage`                                |
 | `transactions.*`, `rpc.*`                                          | Kit transaction messages / client (`sendTransaction`)                                 |
